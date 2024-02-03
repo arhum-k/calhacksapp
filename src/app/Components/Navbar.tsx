@@ -12,7 +12,6 @@ export default function Navbar() {
                         <h1 className="">CalHacks 11.0 Registration</h1>
                     </Link>
                 </div>
-
             </div>
         </nav>
     )
