@@ -1,7 +1,9 @@
 "use client"
 import Image from "next/image";
-import { ChangeEventHandler, useState } from "react";
+import { ChangeEventHandler, useRef, useState } from "react";
 import Navbar from "./Components/Navbar";
+import { FaPlus } from "react-icons/fa";
+import { ClipLoader } from "react-spinners";
 
 export default function Home() {
 
@@ -47,7 +49,16 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const [ageCheck, setAgeCheck] = useState(false)
   const [error, setError] = useState(false)
+  const [resume, setResume] = useState<File | null>(null)
+  const [loading, setLoading] = useState(false)
+  const hiddenFileInput = useRef<HTMLInputElement | null>(null);
 
+
+
+
+  const clickHidden = () => {
+    hiddenFileInput.current && hiddenFileInput.current.click()
+  }
 
 
 
@@ -105,8 +116,11 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-br from-white to-sky-100">
+
+
+
       <Navbar />
-      <div className="flex pt-4 justify-center items-start">
+      <div className="flex py-8 justify-center items-start ">
         <form
           className="flex flex-col gap-4  px-24 font-salvatore"
           onSubmit={(e) => {
@@ -145,17 +159,35 @@ export default function Home() {
             onChange={handleChange}
             rows={6}
           />
+
+          <label> Upload your resume (Optional) </label>
+          <button type="button" onClick={clickHidden} className="flex items-center justify-center border border-grey border-dashed rounded p-4 m-4">
+            <FaPlus />
+            <a className="ml-2 ">{loading ? <ClipLoader color="#525c5a" /> : "Select File"}</a>
+          </button>
+          {resume && (
+            <div className="flex justify-center">
+              <object
+                className="w-full h-96"
+                data={URL.createObjectURL(resume)}
+                type="application/pdf"
+
+              >
+              </object>
+            </div>
+          )}
+          <div className="flex flex-col items-center justify-center mt-4">
+            <input ref={hiddenFileInput} className="hidden" type="file" onChange={(e) => e.target.files && setResume(e.target.files[0])} />
+          </div>
           <label>
             <input
               type="checkbox"
               onChange={() => setAgeCheck(!ageCheck)}
             /> Check the box if you are 18+
           </label>
-
+          <button className="border rounded-xl bg-blue-400 w-20 p-2 text-white" type="submit"> Submit</button>
           {error && errorMessage.map((message, index) => <p className="text-red-500">{message}</p>)}
 
-
-          <button className="border rounded-xl bg-blue-400 w-20 p-2 text-white" type="submit"> Submit</button>
         </form>
       </div>
     </div>
